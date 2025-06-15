@@ -1,0 +1,80 @@
+{% extends "layouts/layout.html" %}
+{% block title %}PE Checker{% endblock %}
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="mb-4">Upload a File to Check PE</h2>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="alert alert-info">
+              {% for message in messages %}
+                <div>{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <!-- Upload Form -->
+        <form method="post" enctype="multipart/form-data" action="{{ url_for('main.upload_file') }}" class="mb-5" id="uploadForm">
+            {{ form.hidden_tag() }}
+            {{ form.checker_name(value="pechecker") }}
+            <div class="mb-3">
+                {{ form.file(class="form-control") }}
+            </div>
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+
+        {% if report is not defined or report is none %}
+            <div class="text-center" id="loader" style="display: none;">
+                <div class="spinner-border" role="status"></div>
+            </div>
+        {% endif %}
+        
+        {% if report %}
+        <hr class="my-5">
+        <a href="{{ url_for('main.download_report', checker='pechecker', report_id=report_id) }}" class="btn btn-primary" target="_blank">
+            Download Report PDF
+        </a>
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">File Info</div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ report.file_name }}</p>
+                    <p><strong>State:</strong> {{ report.state }}</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">PE Features</div>
+                <div class="card-body p-0">
+                    <table class="table table-striped table-bordered mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Feature</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for key, value in report.items() %}
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>{{ value }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function() {
+            // Show the loader div
+            document.getElementById('loader').style.display = 'block';
+        });
+    </script>
+{% endblock %}

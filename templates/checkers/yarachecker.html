@@ -1,0 +1,90 @@
+{% extends "layouts/layout.html" %}
+{% block title %}YARA Rules Checker{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Upload a File to Check YARA Rules</h2>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-info">
+        {% for message in messages %}
+        <div>{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Upload Form -->
+    <form method="post" enctype="multipart/form-data" action="{{ url_for('main.upload_file') }}" class="mb-5" id="uploadForm">
+        {{ form.hidden_tag() }}
+        {{ form.checker_name(value="yarachecker") }}
+        <div class="mb-3">
+            {{ form.file(class="form-control") }}
+        </div>
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+
+    {% if report is not defined or report is none %}
+        <div class="text-center" id="loader" style="display: none;">
+            <div class="spinner-border" role="status"></div>
+        </div>
+    {% endif %}
+
+    {% if report %}
+    <hr class="my-5">
+    <a href="{{ url_for('main.download_report', checker='yarachecker', report_id=report_id) }}" class="btn btn-primary" target="_blank">
+            Download Report PDF
+        </a>
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">File Info</div>
+        <div class="card-body">
+            <p><strong>Name:</strong> {{ report.file_name }}</p>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">YARA Rules</div>
+        <div class="card-body p-0">
+            <table class="table table-striped table-bordered mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Feature</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for match in report.matches %}
+                    <tr>
+                        <td>{{ match.rule }}</td>
+                        <td>
+                            {% if match.meta %}
+                            <ul>
+                                {% for meta_key, meta_val in match.meta.items() %}
+                                <li><strong>{{ meta_key }}:</strong> {{ meta_val }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            No metadata
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function() {
+            // Show the loader div
+            document.getElementById('loader').style.display = 'block';
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,47 @@
+{
+    "file": "main.exe",
+    "score": 6,
+    "verdict": "likely_malicious",
+    "reasons": [
+        "suspicious_apis found: 2 item(s)",
+        "unusual_section_names found: 15 item(s)",
+        "strange_image_base = True",
+        "contains_anti_vm_debugging = True"
+    ],
+    "indicators": {
+        "entry_point_outside_text": false,
+        "writable_executable_section": false,
+        "suspicious_apis": [
+            "Sleep",
+            "VirtualProtect"
+        ],
+        "no_imports": false,
+        "invalid_timestamp": false,
+        "high_entropy_sections": [],
+        "unusual_section_names": [
+            ".pdata",
+            ".xdata",
+            ".bss",
+            ".idata",
+            ".CRT",
+            ".tls",
+            "/4",
+            "/19",
+            "/31",
+            "/45",
+            "/57",
+            "/70",
+            "/81",
+            "/97",
+            "/113"
+        ],
+        "strange_image_base": true,
+        "tiny_text_section": false,
+        "looks_packed": false,
+        "has_signature": false,
+        "suspicious_file_size": false,
+        "contains_debug_info": false,
+        "contains_shellcode": false,
+        "contains_anti_vm_debugging": true
+    }
+}

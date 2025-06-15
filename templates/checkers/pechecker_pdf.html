@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>PE Checker Report</title>
+    <style>
+        .safe {
+            color: green;
+        }
+        .unsafe {
+            color: red;
+        }
+        .warning {
+            background-color: #ffed4f;
+        }
+    </style>
+</head>
+<body>
+    <h2>PE Checker Report</h2>
+    {% if report %}
+        <h3>File Information</h3>
+        <table border="1" style="padding: 0.5rem; vertical-align: middle;">
+            <tr>
+                <th style="width: 30%; background-color: #008dee; color: #fff;">Name: </th>
+                <td>{{ report.file_name }}</td>
+            </tr>
+            <tr>
+                <th style="width: 30%; background-color: #008dee; color: #fff;">State : </th>
+                <td>{{ report.state }}</td>
+            </tr>
+        </table>
+
+        <h3>PE Metadata</h3>
+        <table border="1" style="padding: 0.5rem; vertical-align: middle;">
+            <tr>
+                <th style="background-color: #198754; color: #fff;">Key</th>
+                <th style="background-color: #198754; color: #fff;">Value</th>
+            </tr>
+            {% set ns = namespace(i=0) %}
+            {% for key, value in report.items() %}
+            <tr style="background-color: {{ '#ffffff' if ns.i % 2 == 0 else '#c4c4c4' }};">
+                <td style="width: 30%; text-align: right; font-weight: bold;">{{ key }}</td>
+                <td>{{ value }}</td>
+            </tr>
+            {% set ns.i = ns.i + 1 %}
+            {% endfor %}
+        </table>
+    {% endif %}
+</body>
+</html>

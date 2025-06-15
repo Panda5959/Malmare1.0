@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>IP Checker Report</title>
+    <style>
+        .safe {
+            color: green;
+        }
+        .unsafe {
+            color: red;
+        }
+        .unsupported {
+            background-color: #ffed4f;
+        }
+    </style>
+</head>
+<body>
+    <h2>IP Checker Report</h2>
+    {% if report %}
+        <h3>IP Information</h3>
+        <table border="1" style="padding: 0.5rem; vertical-align: middle;">
+            <tr>
+                <th style="width: 25%; background-color: #008dee; color: #fff;">IP Address</th>
+                <td>{{ report.ip_address }}</td>
+            </tr>
+            <tr>
+                <th style="width: 25%; background-color: #008dee; color: #fff;">Malicious Count</th>
+                <td>{{ report.scan_results.malicious_count }}</td>
+            </tr>
+            <tr>
+                <th style="width: 25%; background-color: #008dee; color: #fff;">Clean Count</th>
+                <td>{{ report.scan_results.clean_count }}</td>
+            </tr>
+            <tr>
+                <th style="width: 25%; background-color: #008dee; color: #fff;">Status</th>
+                <td>
+                    {% if report.scan_results.is_safe %}
+                        <span class="safe">Safe</span>
+                    {% else %}
+                        <span class="unsafe">Malicious</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+
+        <h3>Scan Engine Results</h3>
+        {% set results = report.scan_results.analysis_results %}
+        <table border="1" style="padding: 0.5rem; vertical-align: middle;">
+            <tr>
+                <th style="width: 25%; background-color: #198754; color: #fff;">Engine</th>
+                <th style="width: 25%; background-color: #198754; color: #fff;">Category</th>
+                <th style="width: 25%; background-color: #198754; color: #fff;">Result</th>
+                <th style="width: 25%; background-color: #198754; color: #fff;">Method</th>
+            </tr>
+            {% set ns = namespace(i=0) %}
+            {% for engine, res in results.items() %}
+                {% if res.category == 'undetected' %}
+                <tr style="background-color: {{ '#ffffff' if ns.i % 2 == 0 else '#c4c4c4' }};">
+                    <td style="text-align: center;">{{ engine }}</td>
+                    <td style="text-align: center;">{{ res.category }}</td>
+                    <td style="text-align: center;">{{ res.result if res.result else 'Clean' }}</td>
+                    <td style="text-align: center;">{{ res.method }}</td>
+                </tr>
+                {% set ns.i = ns.i + 1 %}
+                {% endif %}
+            {% endfor %}
+            {% for engine, res in results.items() %}
+                {% if res.category == 'type-unsupported' %}
+                <tr class="unsupported">
+                    <td style="text-align: center;">{{ engine }}</td>
+                    <td style="text-align: center;">{{ res.category }}</td>
+                    <td style="text-align: center;">{{ res.result if res.result else 'Unknown' }}</td>
+                    <td style="text-align: center;">{{ res.method }}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No report data available.</p>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,36 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('main.home') }}">Malmare</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarScroll">
+            <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'main.home' %}active{% endif %}" href="{{ url_for('main.home') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'main.filechecker' %}active{% endif %}" href="{{ url_for('main.filechecker') }}">File Checker</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'main.ipchecker' %}active{% endif %}" href="{{ url_for('main.ipchecker') }}">IP Checker</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'main.urlchecker' %}active{% endif %}" href="{{ url_for('main.urlchecker') }}">URL Checker</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'main.pechecker' %}active{% endif %}" href="{{ url_for('main.pechecker') }}">PE Checker</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'main.yarachecker' %}active{% endif %}" href="{{ url_for('main.yarachecker') }}">YARA Rules</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'main.getstrings' %}active{% endif %}" href="{{ url_for('main.getstrings') }}">Get Strings</a> 
+                </li>
+                <li>
+                    <a class="nav-link" href="http://localhost:8000/">Dynamic Analysis</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

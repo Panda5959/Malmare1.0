@@ -1,0 +1,88 @@
+{% extends "layouts/layout.html" %}
+{% block title %}URL Checker{% endblock %}
+{% block content %}
+
+    <div class="container mt-5">
+        <h2 class="mb-4">URL Checker</h2>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="alert alert-info">
+                {% for message in messages %}
+                <div>{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="post" id="uploadForm">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.url.label }} {{ form.url(class="form-control") }}
+            </div>
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+
+        {% if result is not defined or result is none %}
+            <div class="text-center" id="loader" style="display: none;">
+                <div class="spinner-border" role="status"></div>
+            </div>
+        {% endif %}
+
+        {% if result %}
+        <hr class="my-5">
+        <a href="{{ url_for('main.download_report', checker='urlchecker', report_id=report_id) }}" class="btn btn-primary" target="_blank">
+            Download Report PDF
+        </a>
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">URL Info</div>
+            <div class="card-body">
+                <p><strong>URL:</strong> {{ result.url }}</p>
+                <p><strong>Malicious Count:</strong> {{ result.scan_results.summary.malicious_count }}</p>
+                <p><strong>Suspicious Count:</strong> {{ result.scan_results.summary.suspicious_count }}</p>
+                <p><strong>Clean Count:</strong> {{ result.scan_results.summary.clean_count }}</p>
+                <p><strong>Safe:</strong> {{ result.scan_results.summary.is_safe }}</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-success text-white">Scan Results</div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Engine</th>
+                                <th>Category</th>
+                                <th>Result</th>
+                                <th>Method</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for value in result.scan_results.analysis_results.items() %}
+                            <tr>
+                                <td>{{ value[1].engine_name }}</td>
+                                <td>{{ value[1].category }}</td>
+                                <td>{{ value[1].result if value[1].result else 'Clean' }}</td>
+                                <td>{{ value[1].method }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function() {
+            // Show the loader div
+            document.getElementById('loader').style.display = 'block';
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>YARA Checker Report</title>
+    <style>
+        th {
+            background-color: #008dee;
+            color: #fff;
+        }
+        table {
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+        th, td {
+            padding: 0.5rem 1rem;
+            border: 1px solid #888;
+            vertical-align: middle;
+        }
+        .meta-list {
+            margin: 0;
+            padding-left: 1.5em;
+        }
+        .no-meta {
+            color: #888;
+            font-style: italic;
+        }
+        .yara-heading {
+            background-color: #198754;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <h2>YARA Checker Report</h2>
+    {% if report %}
+        <h3>File Information</h3>
+        <table>
+            <tr>
+                <th style="width: 25%;">Name</th>
+                <td>{{ report.file_name }}</td>
+            </tr>
+        </table>
+
+        <h3>YARA Rules Matched</h3>
+        <table>
+            <tr>
+                <th class="yara-heading" style="width: 25%;">Rule</th>
+                <th class="yara-heading" style="width: 75%;">Metadata</th>
+            </tr>
+            {% if report.matches %}
+                {% set ns = namespace(i=0) %}
+                {% for match in report.matches %}
+                <tr style="background-color: {{ '#fff' if ns.i % 2 == 0 else '#c4c4c4' }};">
+                    <td style="text-align: center;">{{ match.rule }}</td>
+                    <td>
+                        {% if match.meta %}
+                        <ul class="meta-list">
+                            {% for meta_key, meta_val in match.meta.items() %}
+                            <li><strong>{{ meta_key }}:</strong> {{ meta_val }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <span class="no-meta">No metadata</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% set ns.i = ns.i + 1 %}
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="2" style="text-align:center; color:#888;">No YARA rule matches found.</td>
+                </tr>
+            {% endif %}
+        </table>
+    {% else %}
+        <p>No report data available.</p>
+    {% endif %}
+</body>
+</html>

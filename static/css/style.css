@@ -1,0 +1,9 @@
+body {
+    min-height: 100vh;
+    background-color: #ffffff;
+}
+
+.par-img {
+    max-width: 100%;
+    height: auto;
+}

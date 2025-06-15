@@ -1,0 +1,94 @@
+{% extends "layouts/layout.html" %}
+{% block title %}File Checker{% endblock %}
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="mb-4">Upload a File to Check</h2>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="alert alert-info">
+              {% for message in messages %}
+                <div>{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <!-- Upload Form -->
+        <form method="post" enctype="multipart/form-data" action="{{ url_for('main.upload_file') }}" class="mb-5" id="uploadForm">
+            {{ form.hidden_tag() }}
+            {{ form.checker_name(value="filechecker") }}
+            <div class="mb-3">
+                {{ form.file(class="form-control") }}
+            </div>
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+        {% if report is not defined or report is none %}
+            <div class="text-center" id="loader" style="display: none;">
+                <div class="spinner-border" role="status"></div>
+            </div>
+        {% endif %}
+        
+        {% if report %}
+        <hr class="my-5">
+        <a href="{{ url_for('main.download_report', checker='filechecker', report_id=report_id) }}" class="btn btn-primary" target="_blank">
+            Download Report PDF
+        </a>
+
+        <!-- File Info Card -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">File Info</div>
+            <div class="card-body">
+                <p><strong>Name:</strong> {{ report.file_info.name }}</p>
+                <p><strong>Type:</strong> {{ report.file_info.description }}</p>
+                <p><strong>Size:</strong> {{ "%.2f"|format(report.file_info.size_kb) }} KB</p>
+                <p><strong>SHA256 Hash:</strong> <code>{{ report.file_info.sha256_hash }}</code></p>
+            </div>
+        </div>
+
+        <!-- Scan Results -->
+        <div class="card">
+            <div class="card-header bg-success text-white">Scan Results</div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Engine</th>
+                                <th>Category</th>
+                                <th>Result</th>
+                                <th>Method</th>
+                                <th>Version</th>
+                                <th>Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for engine, details in report.scan_results.analysis_results.items() %}
+                            <tr>
+                                <td>{{ details.engine_name }}</td>
+                                <td>{{ details.category }}</td>
+                                <td>{{ details.result if details.result else 'Clean' }}</td>
+                                <td>{{ details.method }}</td>
+                                <td>{{ details.engine_version }}</td>
+                                <td>{{ details.engine_update }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function() {
+            // Show the loader div
+            document.getElementById('loader').style.display = 'block';
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>File Checker Report</title>
+    <style>
+        .safe {
+            color: green;
+        }
+        .unsafe {
+            color: red;
+        }
+        .unsupported {
+            background-color: #ffed4f;
+        }
+
+    </style>
+</head>
+<body>
+    <h2>File Checker Report</h2>
+    {% if report %}
+        <h3>File Information</h3>
+        <table border="1" style="padding: 0.5rem; vertical-align: middle;">
+            <tr>
+                <th style="width: 25%; background-color: #008dee; color: #fff;">Name</th>
+                <td>{{ report.file_info.name }}</td>
+            </tr>
+            <tr>
+                <th style="width: 25%; background-color: #008dee; color: #fff;">Size (kB)</th>
+                <td>{{ report.file_info.size_kb }}</td>
+            </tr>
+            <tr>
+                <th style="width: 25%; background-color: #008dee; color: #fff;">Description</th>
+                <td>{{ report.file_info.description }}</td>
+            </tr>
+            <tr>
+                <th style="width: 25%; background-color: #008dee; color: #fff;">SHA256 Hash</th>
+                <td style="font-family:monospace; color: orange;">{{ report.file_info.sha256_hash }}</td>
+            </tr>
+        </table>
+
+        <h3>Scan Summary</h3>
+        <ul>
+          <li>Malicious Count:
+            <strong>{{
+              report.scan_results.malicious_count }}</strong>
+          </li>
+          <li>Status:
+            {% if report.scan_results.is_safe %}
+              <span class="safe">Safe</span>
+            {% else %}
+              <span class="unsafe">Malicious</span>
+            {% endif %}
+          </li>
+        </ul>
+
+        <h3>Scan Engine Results</h3>
+        {% set results = report.scan_results.analysis_results %}
+        <table  border="1" style="padding: 0.5rem; vertical-align: middle;">
+            <tr>
+                <th style="width: 20%; background-color: #198754; color: #fff;">Engine</th>
+                <th style="width: 20%; background-color: #198754; color: #fff;">Version</th>
+                <th style="width: 20%; background-color: #198754; color: #fff;">Update</th>
+                <th style="width: 20%; background-color: #198754; color: #fff;">Category</th>
+                <th style="width: 20%; background-color: #198754; color: #fff;">Result</th>
+            </tr>
+            {% set ns = namespace(i=0) %}
+            {% for engine, res in results.items() %}
+                {% if res.category == 'undetected' %}
+                <tr style="background-color: {{ '#ffffff' if ns.i % 2 == 0 else '#c4c4c4' }};">
+                    <td style="width: 20%; text-align: center;">{{ engine }}</td>
+                    <td style="width: 20%; text-align: center;">{{ res.engine_version }}</td>
+                    <td style="width: 20%; text-align: center;">{{ res.engine_update }}</td>
+                    <td style="width: 20%; text-align: center;">{{ res.category }}</td>
+                    <td style="width: 20%; text-align: center;">{{ res.result or 'Clean' }}</td>
+                </tr>
+                {% set ns.i = ns.i + 1 %}
+                {% endif %}
+            {% endfor %}
+            {% for engine, res in results.items() %}
+                {% if res.category == 'type-unsupported' %}
+                <tr class="unsupported">
+                    <td style="text-align: center;">{{ engine }}</td>
+                    <td style="text-align: center;">{{ res.engine_version }}</td>
+                    <td style="text-align: center;">{{ res.engine_update }}</td>
+                    <td style="text-align: center;">{{ res.category }}</td>
+                    <td style="text-align: center;">{{ res.result or 'Unknown' }}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No report data available.</p>
+    {% endif %}
+</body>
+</html>

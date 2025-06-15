@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>File Checker Report</title>
+    <style>
+        .safe {
+            color: green;
+        }
+        .unsafe {
+            color: red;
+        }
+        .unsupported {
+            background-color: #ffed4f;
+        }
+
+    </style>
+</head>
+<body>
+    <h2>Get String Report</h2>
+    {% if report %}
+        <h3>File Information</h3>
+        <table border="1" style="padding: 0.5rem; vertical-align: middle;">
+            <tr>
+                <th style="width: 25%; background-color: #008dee; color: #fff;">Name</th>
+                <td>{{ report.file_name }}</td>
+            </tr>
+        </table>
+
+        <h3>Strings Table</h3>
+        <table  border="1" style="padding: 0.5rem; vertical-align: middle;">
+            <tr>
+                <th style="width: 20%; background-color: #198754; color: #fff;">Type</th>
+                <th style="width: 80%; background-color: #198754; color: #fff;">Value</th>
+            </tr>
+            {% for feature in report.features %}
+                <tr>
+                    <td>{{ feature.Type }}</td>
+                    <td>{{ feature.value }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No report data available.</p>
+    {% endif %}
+</body>
+</html>

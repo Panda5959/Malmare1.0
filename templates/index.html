@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Malmare - A web application for Static and Dynamic Analysis.">
+    <meta name="keywords" content="Malmare, Static Analysis, Dynamic Analysis, Web Application, Security Platform">
+    <meta name="author" content="Malmare Team">
+    <meta name="designer" content="Helwan University, Cairo, Egypt">
+    <meta name="language" content="English">
+    <meta name="Revisit-After" content="2 days">
+    <meta name="robots" content="index, follow">
+    <meta name="distribution" content="Global">
+
+    <meta name="msapplication-TileColor" content="#000000">
+    <meta name="msapplication-TileImage" content="{{ url_for('static', filename='favicon/favicon-144x144.png') }}">
+    <meta name="theme-color" content="#000000">
+
+    <link rel="apple-touch-icon" href="favicon/favicon.png" />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}">
+
+    <title>Malmare</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('main.home') }}">Malmare</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
+                aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarScroll">
+                <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('main.home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.filechecker') }}">File Checker</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.ipchecker') }}">IP Checker</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.urlchecker') }}">URL Checker</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.pechecker') }}">PE Checker</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.yarachecker') }}">YARA Rules</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.getstrings') }}">Get Strings</a> 
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <div class="row  d-flex justify-content-between flex-row">
+            <div class="d-flex flex-column justify-content-around col-lg-5">
+                <div class="h2 py-3 text-center">
+                    <h2 class="mb-4">Welcome to Malmare</h2>
+                    <!-- <span style="color: #6366f1; font-weight: bold;">E</span>stimating the <span style="color: #6366f1; font-weight: bold;">R</span>elative <span style="color: #6366f1; font-weight: bold;">W</span>eights of <span style="color: #6366f1; font-weight: bold;">S</span>ubjects -->
+                    A web application for Static and Dynamic Analysis.
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="parallax mx-auto me-lg-0"
+                    style="max-width: 648px; transform: translate3d(0px, 0px, 0px) rotate(0.0001deg); transform-style: preserve-3d; backface-visibility: hidden; pointer-events: none;">
+                    <div class="parallax-layer" data-depth="0.1"
+                        style="transform: translate3d(6.5px, -2.6px, 0px); transform-style: preserve-3d; backface-visibility: hidden; position: relative; display: block; left: 0px; top: 0px;">
+                        <img src="{{ url_for('static', filename='img/edu-layer-10.png') }}" alt="Layer" class="par-img">
+                    </div>
+                    <div class="parallax-layer zindex-3" data-depth="-0.12"
+                        style="transform: translate3d(-7.7px, 3.1px, 0px); transform-style: preserve-3d; backface-visibility: hidden; position: absolute; display: block; left: 0px; top: 0px;">
+                        <img src="{{ url_for('static', filename='img/edu-layer-1.png') }}" alt="Layer" class="par-img">
+                    </div>
+                    <div class="parallax-layer zindex-5" data-depth="0.27"
+                        style="transform: translate3d(17.4px, -6.9px, 0px); transform-style: preserve-3d; backface-visibility: hidden; position: absolute; display: block; left: 0px; top: 0px;">
+                        <img src="{{ url_for('static', filename='img/edu-layer-2.png') }}" alt="Layer" class="par-img">
+                    </div>
+                    <div class="parallax-layer zindex-1" data-depth="0.1"
+                        style="transform: translate3d(6.5px, -2.6px, 0px); transform-style: preserve-3d; backface-visibility: hidden; position: absolute; display: block; left: 0px; top: 0px;">
+                        <img src="{{ url_for('static', filename='img/edu-layer-4.png') }}" alt="Layer" class="par-img">
+                    </div>
+                    <div class="parallax-layer zindex-1" data-depth="-0.28"
+                        style="transform: translate3d(-18.1px, 7.1px, 0px); transform-style: preserve-3d; backface-visibility: hidden; position: absolute; display: block; left: 0px; top: 0px;">
+                        <img src="{{ url_for('static', filename='img/edu-layer-3.png') }}" alt="Layer" class="par-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'includes/footer.html' %}
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/parallax.min.js') }}"></script>
+    <script>
+        var scene = document.querySelector('.parallax');
+        var parallaxInstance = new Parallax(scene);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>URL Checker Report</title>
+    <style>
+        .safe {
+            color: green;
+        }
+        .unsafe {
+            color: red;
+        }
+        .suspicious {
+            color: orange;
+        }
+        .unsupported {
+            background-color: #ffed4f;
+        }
+    </style>
+</head>
+<body>
+    <h2>URL Checker Report</h2>
+    {% if report %}
+        <h3>URL Information</h3>
+        <table border="1" style="padding: 0.5rem; vertical-align: middle;">
+            <tr>
+                <th style="width: 25%; background-color: #008dee; color: #fff;">URL</th>
+                <td style="word-break: break-all;">{{ report.url }}</td>
+            </tr>
+            <tr>
+                <th style="width: 25%; background-color: #008dee; color: #fff;">Malicious Count</th>
+                <td>{{ report.scan_results.summary.malicious_count }}</td>
+            </tr>
+            <tr>
+                <th style="width: 25%; background-color: #008dee; color: #fff;">Suspicious Count</th>
+                <td>{{ report.scan_results.summary.suspicious_count }}</td>
+            </tr>
+            <tr>
+                <th style="width: 25%; background-color: #008dee; color: #fff;">Clean Count</th>
+                <td>{{ report.scan_results.summary.clean_count }}</td>
+            </tr>
+            <tr>
+                <th style="width: 25%; background-color: #008dee; color: #fff;">Status</th>
+                <td>
+                    {% if report.scan_results.summary.is_safe %}
+                        <span class="safe">Safe</span>
+                    {% else %}
+                        <span class="unsafe">Malicious/Suspicious</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+
+        <h3>Scan Engine Results</h3>
+        {% set results = report.scan_results.analysis_results %}
+        <table border="1" style="padding: 0.5rem; vertical-align: middle;">
+            <tr>
+                <th style="width: 25%; background-color: #198754; color: #fff;">Engine</th>
+                <th style="width: 25%; background-color: #198754; color: #fff;">Category</th>
+                <th style="width: 25%; background-color: #198754; color: #fff;">Result</th>
+                <th style="width: 25%; background-color: #198754; color: #fff;">Method</th>
+            </tr>
+            {% set ns = namespace(i=0) %}
+            {% for engine, res in results.items() %}
+                {% if res.category == 'clean' %}
+                <tr style="background-color: {{ '#ffffff' if ns.i % 2 == 0 else '#c4c4c4' }};">
+                    <td style="text-align: center;">{{ res.engine_name }}</td>
+                    <td style="text-align: center;">{{ res.category }}</td>
+                    <td style="text-align: center;">{{ res.result or 'Clean' }}</td>
+                    <td style="text-align: center;">{{ res.method }}</td>
+                </tr>
+                {% set ns.i = ns.i + 1 %}
+                {% endif %}
+            {% endfor %}
+            {% for engine, res in results.items() %}
+                {% if res.category == 'malicious' %}
+                <tr>
+                    <td style="text-align: center;">{{ res.engine_name }}</td>
+                    <td style="text-align: center;" class="unsafe">{{ res.category }}</td>
+                    <td style="text-align: center;" class="unsafe">{{ res.result }}</td>
+                    <td style="text-align: center;">{{ res.method }}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+            {% for engine, res in results.items() %}
+                <tr>
+                    <td style="text-align: center;">{{ res.engine_name }}</td>
+                    <td style="text-align: center;" class="suspicious">{{ res.category }}</td>
+                    <td style="text-align: center;" class="suspicious">{{ res.result }}</td>
+                    <td style="text-align: center;">{{ res.method }}</td>
+                </tr>
+            {% endfor %}
+            {% for engine, res in results.items() %}
+                {% if res.category == 'type-unsupported' %}
+                <tr class="unsupported">
+                    <td style="text-align: center;">{{ res.engine_name }}</td>
+                    <td style="text-align: center;">{{ res.category }}</td>
+                    <td style="text-align: center;">{{ res.result or 'Unknown' }}</td>
+                    <td style="text-align: center;">{{ res.method }}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No report data available.</p>
+    {% endif %}
+</body>
+</html>
