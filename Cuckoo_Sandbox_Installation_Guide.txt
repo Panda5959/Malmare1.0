@@ -1,0 +1,87 @@
+
+Cuckoo Sandbox Installation & Setup Guide (Ubuntu)
+==================================================
+
+This guide explains how I installed and configured Cuckoo Sandbox on Ubuntu for dynamic malware analysis. 
+It uses Python 2 and VirtualBox with a Windows VM.
+
+--------------------------------------------------
+[1] System Requirements
+--------------------------------------------------
+- Ubuntu 18.04 or 20.04
+- Python 2.7
+- VirtualBox (or KVM)
+- A Windows 7 or 10 virtual machine
+- Tools like ProcMon, Wireshark, and Cuckoo Agent installed on the guest VM
+
+--------------------------------------------------
+[2] Install Dependencies
+--------------------------------------------------
+sudo apt update
+sudo apt install python python-pip python-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libjpeg-dev zlib1g-dev
+sudo apt install mongodb postgresql libpq-dev tcpdump apparmor-utils
+
+--------------------------------------------------
+[3] Create Python Virtual Environment
+--------------------------------------------------
+sudo pip install virtualenv
+virtualenv cuckooenv
+source cuckooenv/bin/activate
+
+--------------------------------------------------
+[4] Download and Install Cuckoo Sandbox
+--------------------------------------------------
+git clone https://github.com/cuckoosandbox/cuckoo.git
+cd cuckoo
+pip install -r requirements.txt
+python setup.py install
+
+--------------------------------------------------
+[5] Set Up VirtualBox & Guest Machine
+--------------------------------------------------
+- Install VirtualBox:
+  sudo apt install virtualbox
+- Create a Windows 7 or 10 virtual machine
+- Disable Windows Defender, firewall, and updates
+- Install tools: Python, ProcMon, Wireshark, etc.
+- Download and place agent.py in C:\
+- Use Host-only Adapter and assign a static IP like 192.168.56.101
+- Create a snapshot (e.g., Snapshot1)
+
+--------------------------------------------------
+[6] Configure Cuckoo
+--------------------------------------------------
+Edit this file: cuckoo/conf/virtualbox.conf
+
+[virtualbox]
+machines = win10
+
+[win10]
+label = win10
+ip = 192.168.56.101
+platform = windows
+snapshot = Snapshot1
+interface = vboxnet0
+
+(You may also configure cuckoo.conf, memory.conf, etc. as needed.)
+
+--------------------------------------------------
+[7] Permissions for Tcpdump
+--------------------------------------------------
+sudo aa-disable /usr/sbin/tcpdump
+sudo setcap cap_net_raw,cap_net_admin=eip /usr/sbin/tcpdump
+
+--------------------------------------------------
+[8] Start Cuckoo Sandbox
+--------------------------------------------------
+cuckoo init
+cuckoo
+
+(Open another terminal and run:)
+cuckoo web
+
+Then access the interface via: http://127.0.0.1:8000
+
+--------------------------------------------------
+✅ You can now submit malware samples and analyze their behavior, including file system changes, network connections, 
+registry modifications, and more—all inside a secure virtual environment.
